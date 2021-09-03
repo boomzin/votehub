@@ -10,3 +10,8 @@ VALUES ('ROLE_USER', 1),
        ('ROLE_USER', 3),
        ('ROLE_USER', 4),
        ('ROLE_ADMIN', 4);
+
+INSERT INTO RESTAURANT (RESTAURANT_NAME, ADDRESS)
+VALUES ('Restaurant1', 'Restaurant1Address'),
+       ('Restaurant2', 'Restaurant2Address'),
+       ('Restaurant3', 'Restaurant3Address');
