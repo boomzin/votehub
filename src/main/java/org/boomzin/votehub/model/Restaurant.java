@@ -16,7 +16,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@ToString(callSuper = true)
+@ToString(callSuper = true, exclude = {"menu", "votes"})
 public class Restaurant extends BaseEntity {
 
     @Column(name = "restaurant_name")
@@ -31,4 +31,9 @@ public class Restaurant extends BaseEntity {
     @OrderBy("date DESC")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<MenuItem> menu;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
+    @OrderBy("date DESC")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<Vote> votes;
 }

@@ -1,11 +1,14 @@
 package org.boomzin.votehub.model;
 
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -14,7 +17,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@ToString(callSuper = true, exclude = {"password"})
+@ToString(callSuper = true, exclude = {"password", "votes"})
 public class User extends BaseEntity {
 
     @Column(name = "email", nullable = false, unique = true)
@@ -36,4 +39,9 @@ public class User extends BaseEntity {
     @Column(name = "role")
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<Role> roles;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+    @OrderBy("date DESC")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<Vote> votes;
 }
