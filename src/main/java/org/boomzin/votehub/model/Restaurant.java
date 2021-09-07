@@ -5,7 +5,6 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import javax.validation.Constraint;
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -16,7 +15,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@ToString(callSuper = true, exclude = {"menu", "votes"})
+@ToString(callSuper = true)
 public class Restaurant extends BaseEntity {
 
     @Column(name = "restaurant_name")
@@ -30,10 +29,12 @@ public class Restaurant extends BaseEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
     @OrderBy("date DESC")
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @ToString.Exclude
     private List<MenuItem> menu;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
     @OrderBy("date DESC")
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @ToString.Exclude
     private List<Vote> votes;
 }

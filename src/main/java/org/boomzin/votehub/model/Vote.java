@@ -1,5 +1,6 @@
 package org.boomzin.votehub.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -28,5 +29,6 @@ public class Vote extends BaseEntity {
     private Restaurant restaurant;
 
     @ManyToOne
+    @JsonBackReference
     private User user ;
 }

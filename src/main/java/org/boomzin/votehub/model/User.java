@@ -1,6 +1,8 @@
 package org.boomzin.votehub.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
+import org.boomzin.votehub.HasIdAndEmail;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -17,8 +19,8 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@ToString(callSuper = true, exclude = {"password", "votes"})
-public class User extends BaseEntity {
+@ToString(callSuper = true)
+public class User extends BaseEntity implements HasIdAndEmail {
 
     @Column(name = "email", nullable = false, unique = true)
     @Email
@@ -35,13 +37,21 @@ public class User extends BaseEntity {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "role"}, name = "user_roles_unique")})
+    @CollectionTable(name = "user_role", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "role"}, name = "user_roles_unique")})
     @Column(name = "role")
+    @JoinColumn(name = "user_id")
     @ElementCollection(fetch = FetchType.EAGER)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Role> roles;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     @OrderBy("date DESC")
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonManagedReference
+    @ToString.Exclude
     private List<Vote> votes;
+
+    public boolean addOrRemoveRole(Role role) {
+        return roles.contains(role) ? roles.remove(role) : roles.add(role);
+    }
 }
