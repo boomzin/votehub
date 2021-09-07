@@ -37,3 +37,12 @@ VALUES ('2021-09-01', 'First day rest1 dish1', 10, 1),
        ('2021-09-02', 'Second day rest3 dish3', 17, 3),
        ('2021-09-02', 'Second day rest3 dish4', 17, 3),
        ('2021-09-02', 'Second day rest3 dish5', 17, 3);
+
+INSERT INTO VOTE (DATE, DESCRIPTION, RESTAURANT_ID, USER_ID)
+VALUES ( '2021-09-01', 'day1 user1 rest2', 2, 1),
+       ( '2021-09-01', 'day1 user2 rest2', 2, 2),
+       ( '2021-09-01', 'day1 user3 rest1', 1, 3),
+       ( '2021-09-01', 'day1 admin rest3', 3, 4),
+       ( '2021-09-02', 'day2 user1 rest2', 2, 1),
+       ( '2021-09-02', 'day2 user2 rest1', 1, 2),
+       ( '2021-09-02', 'day2 user3 rest2', 2, 3);
