@@ -16,6 +16,7 @@ import java.util.List;
 
 import static org.boomzin.votehub.util.ValidationUtil.checkNew;
 import static org.boomzin.votehub.util.ValidationUtil.assureIdConsistent;
+import static org.boomzin.votehub.config.WebSecurityConfig.PASSWORD_ENCODER;
 
 @RestController
 @RequestMapping(value = AdminUserController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -52,6 +53,7 @@ public class AdminUserController extends AbstractUserController {
     public ResponseEntity<User> createWithLocation(@RequestBody User user) {
         log.info("create {}", user);
         checkNew(user);
+        user.setPassword(PASSWORD_ENCODER.encode(user.getPassword()));
         user.setEmail(user.getEmail().toLowerCase());
         User created = repository.save(user);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -66,6 +68,7 @@ public class AdminUserController extends AbstractUserController {
         log.info("update {} with id={}", user, id);
         assureIdConsistent(user, id);
         user.setEmail(user.getEmail().toLowerCase());
+        user.setPassword(PASSWORD_ENCODER.encode(user.getPassword()));
         repository.save(user);
     }
 
