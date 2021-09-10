@@ -26,6 +26,7 @@ public class Vote extends BaseEntity {
     private String name;
 
     @ManyToOne
+    @JsonBackReference(value = "restaurant-votes")
     private Restaurant restaurant;
 
     @ManyToOne

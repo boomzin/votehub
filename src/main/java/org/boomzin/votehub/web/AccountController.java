@@ -26,6 +26,7 @@ public class AccountController extends AbstractUserController {
 
     @GetMapping
     public User get(@AuthenticationPrincipal AuthUser authUser) {
+        log.info("get account {}", authUser.id());
         return authUser.getUser();
     }
 

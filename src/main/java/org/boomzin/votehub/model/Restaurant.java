@@ -1,6 +1,8 @@
 package org.boomzin.votehub.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
+import org.boomzin.votehub.HasId;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -16,25 +18,28 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @ToString(callSuper = true)
-public class Restaurant extends BaseEntity {
+public class Restaurant extends BaseEntity implements HasId {
 
     @Column(name = "restaurant_name")
-    @Size(max = 128)
+    @Size(min = 2, max = 128)
     private String name;
 
     @Column(name = "address")
-    @Size(max = 128)
+    @Size(min = 5, max = 128)
     private String address;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
     @OrderBy("date DESC")
     @OnDelete(action = OnDeleteAction.CASCADE)
+//    https://stackoverflow.com/questions/20119142/jackson-multiple-back-reference-properties-with-name-defaultreference
+    @JsonManagedReference(value = "restaurant-menus")
     @ToString.Exclude
     private List<MenuItem> menu;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
     @OrderBy("date DESC")
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonManagedReference(value = "restaurant-votes")
     @ToString.Exclude
     private List<Vote> votes;
 }
