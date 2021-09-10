@@ -27,55 +27,55 @@ import static org.boomzin.votehub.util.ValidationUtil.checkNew;
 public class RestaurantController {
     static final String REST_URL = "/api/restaurants";
 
-    private final RestaurantRepository repository;
+    private final RestaurantRepository restaurantRepository;
 
     @GetMapping
     public List<Restaurant> getAll() {
         log.info("getAll");
-        return repository.findAll(Sort.by(Sort.Direction.ASC, "name"));
+        return restaurantRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Restaurant> get(@PathVariable int id) {
         log.info("get id {}", id);
-        return ResponseEntity.of(repository.findById(id));
+        return ResponseEntity.of(restaurantRepository.findById(id));
     }
 
     @GetMapping("/{id}/with-menus")
     public ResponseEntity<Restaurant> getWithMenus(@PathVariable int id) {
         log.info("get id {} with menus", id);
-        return ResponseEntity.of(repository.getWithMenus(id));
+        return ResponseEntity.of(restaurantRepository.getWithMenus(id));
     }
 
     @GetMapping("/{id}/with-menu-on-date")
     public ResponseEntity<Restaurant> getWithMenuOnDate(@PathVariable int id, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         log.info("get id {} with menu on date {}", id, date);
-        return ResponseEntity.of(repository.getWithMenusOnDate(id, date));
+        return ResponseEntity.of(restaurantRepository.getWithMenusOnDate(id, date));
     }
 
     @GetMapping("/{id}/with-actual-menu")
     public ResponseEntity<Restaurant> getWithActualMenu(@PathVariable int id) {
         log.info("get id {} with menu on today {}", id);
-        return ResponseEntity.of(repository.getWithActualMenu(id));
+        return ResponseEntity.of(restaurantRepository.getWithActualMenu(id));
     }
 
     @GetMapping("/with-actual-menu")
     public ResponseEntity<List<Restaurant>> getAllWithActualMenu() {
         log.info("getAll with menu on today {}");
-        return ResponseEntity.of(repository.getAllWithActualMenu());
+        return ResponseEntity.of(restaurantRepository.getAllWithActualMenu());
     }
 
     @GetMapping("/with-menu-on-date")
     public ResponseEntity<List<Restaurant>> getAllWithMenuOnDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         log.info("getAll with menu on date {}", date);
-        return ResponseEntity.of(repository.getAllWithMenuOnDate(date));
+        return ResponseEntity.of(restaurantRepository.getAllWithMenuOnDate(date));
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
         log.info("delete {}", id);
-        repository.delete(id);
+        restaurantRepository.delete(id);
     }
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Restaurant> createWithLocation(@RequestBody Restaurant restaurant) {
@@ -84,7 +84,7 @@ public class RestaurantController {
         // TODO: add name_address unique validator
         restaurant.setName(restaurant.getAddress().toLowerCase());
         restaurant.setAddress(restaurant.getAddress().toLowerCase());
-        Restaurant created = repository.save(restaurant);
+        Restaurant created = restaurantRepository.save(restaurant);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
@@ -98,48 +98,47 @@ public class RestaurantController {
         assureIdConsistent(restaurant, id);
         restaurant.setName(restaurant.getAddress().toLowerCase());
         restaurant.setAddress(restaurant.getAddress().toLowerCase());
-        repository.save(restaurant);
+        restaurantRepository.save(restaurant);
     }
 
     @GetMapping("/rating-on-date")
     public List<RestaurantWithRating> getRatingOnDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         log.info("get rating on date {}", date);
-        return repository.getRatingOnDate(date).get();
+        return restaurantRepository.getRatingOnDate(date).get();
     }
 
     @GetMapping("/actual-rating")
     public List<RestaurantWithRating> getRatingOnDate() {
         log.info("get rating for today");
-        return repository.getActualRating().get();
+        return restaurantRepository.getActualRating().get();
     }
 
     @GetMapping("/{id}/with-votes")
     public Restaurant getWithVotes(@PathVariable int id) {
         log.info("get restaurant {} with votes", id);
-        return repository.getWithVotes(id).get();
+        return restaurantRepository.getWithVotes(id).get();
     }
 
     @GetMapping("/{id}/with-votes-actual")
     public Restaurant getWithActualVotes(@PathVariable int id) {
         log.info("get restaurant {} with votes for today", id);
-        return repository.getWithActualVotes(id).get();
+        return restaurantRepository.getWithActualVotes(id).get();
     }
 
     @GetMapping("/{id}/with-votes-on-date")
     public Restaurant getWithVotesOnDate (@PathVariable int id, LocalDate date) {
         log.info("get restaurant {} with votes on date {}", id, date);
-        return repository.getWithVotesOnDate(id, date).get();
+        return restaurantRepository.getWithVotesOnDate(id, date).get();
     }
     @GetMapping("/with-votes-actual")
     public List<Restaurant> getAllWithActualVotes() {
         log.info("get restaurants with votes for today");
-        return repository.getAllWithActualVotes().get();
+        return restaurantRepository.getAllWithActualVotes().get();
     }
 
     @GetMapping("/with-votes-on-date")
     public List<Restaurant> getWithVotesOnDate (LocalDate date) {
         log.info("get restaurants with votes on date {}", date);
-        return repository.getAllWithVotesOnDate(date).get();
+        return restaurantRepository.getAllWithVotesOnDate(date).get();
     }
-
 }

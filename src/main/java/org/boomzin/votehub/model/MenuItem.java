@@ -2,6 +2,8 @@ package org.boomzin.votehub.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
+import org.boomzin.votehub.HasId;
+import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -15,17 +17,17 @@ import java.time.LocalDate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @ToString(callSuper = true)
-public class MenuItem extends BaseEntity {
+public class MenuItem extends BaseEntity implements HasId {
 
     @Column(name = "date")
     private LocalDate date;
 
     @Column(name = "description")
     @Size(min = 2, max = 128)
-    private String name;
+    private String description;
 
     @Column(name = "price")
-    @Size(min = 1, max = 10000)
+    @Range(min = 1, max = 10000)
     private Integer price;
 
     @ManyToOne
