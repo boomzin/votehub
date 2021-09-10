@@ -2,6 +2,7 @@ package org.boomzin.votehub.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
+import org.boomzin.votehub.HasId;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -16,7 +17,7 @@ import java.time.LocalDate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @ToString(callSuper = true)
-public class Vote extends BaseEntity {
+public class Vote extends BaseEntity implements HasId {
 
     @Column(name = "date")
     private LocalDate date;

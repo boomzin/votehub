@@ -53,6 +53,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/api/admin/**").hasRole(Role.ADMIN.name())
                 .antMatchers("/api/account/**").authenticated()
+                .antMatchers("/api/votes/**").authenticated()
                 .antMatchers(HttpMethod.POST, "/api/account").anonymous()
                 .antMatchers(HttpMethod.GET, "/api/restaurants/*").anonymous()
                 .antMatchers(HttpMethod.GET, "/api/restaurants/**/with-votes*").hasRole(Role.ADMIN.name())

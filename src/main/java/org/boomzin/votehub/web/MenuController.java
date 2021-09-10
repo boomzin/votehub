@@ -21,11 +21,11 @@ import static org.boomzin.votehub.util.ValidationUtil.assureIdConsistent;
 import static org.boomzin.votehub.util.ValidationUtil.checkNew;
 
 @RestController
-@RequestMapping(value = RestaurantController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = MenuController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 @AllArgsConstructor
 public class MenuController {
-    static final String REST_URL = RestaurantController.REST_URL;
+    static final String REST_URL = "/api/restaurants";
 
     private final RestaurantRepository restaurantRepository;
     private final MenuItemRepository menuItemRepository;
