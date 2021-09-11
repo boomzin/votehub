@@ -30,8 +30,8 @@ public interface VoteRepository extends JpaRepository<Vote, Integer> {
     @Query("SELECT v AS vote, v.restaurant.id AS restaurantId FROM Vote v WHERE v.user.id=?1")
     Optional<List<VoteTo>> getAll(int userId);
 
-    default Vote checkBelong(int id, int userId) {
-        return check(id, userId).orElseThrow(
+    default void checkBelong(int id, int userId) {
+        check(id, userId).orElseThrow(
                 () -> new IllegalRequestDataException("You can only change/delete votes for today" +
                         ", the vote " + id + " is not belong today's voting result for user" + userId));
     }

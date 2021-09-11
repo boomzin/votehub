@@ -15,12 +15,12 @@ public interface MenuItemRepository extends JpaRepository<MenuItem, Integer> {
     @Transactional
     @Modifying
     @Query("DELETE FROM MenuItem mi WHERE mi.restaurant.id=?1 AND mi.id=?2 AND mi.date=CURRENT_DATE")
-    int deleteActualItemForRestaurant(int resaurantId, int id);
+    void deleteActualItemForRestaurant(int resaurantId, int id);
 
     @Transactional
     @Modifying
     @Query("DELETE FROM MenuItem mi WHERE mi.restaurant.id=?1 AND mi.date=CURRENT_DATE ")
-    int deleteAllActualItemsForRestaurant(int id);
+    void deleteAllActualItemsForRestaurant(int id);
 
     @Query("SELECT mi FROM MenuItem mi WHERE mi.restaurant.id=?1 AND mi.id=?2 AND mi.date=CURRENT_DATE")
     Optional<MenuItem> getActualMenuIteForCurrentRestaurant(int restaurantId, int id);

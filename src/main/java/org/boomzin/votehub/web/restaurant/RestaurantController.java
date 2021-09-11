@@ -56,13 +56,13 @@ public class RestaurantController {
 
     @GetMapping("/{id}/with-actual-menu")
     public ResponseEntity<Restaurant> getWithActualMenu(@PathVariable int id) {
-        log.info("get id {} with menu on today {}", id);
+        log.info("get id {} with menu on today", id);
         return ResponseEntity.of(restaurantRepository.getWithActualMenu(id));
     }
 
     @GetMapping("/with-actual-menu")
     public ResponseEntity<List<Restaurant>> getAllWithActualMenu() {
-        log.info("getAll with menu on today {}");
+        log.info("getAll with menu on today");
         return ResponseEntity.of(restaurantRepository.getAllWithActualMenu());
     }
 

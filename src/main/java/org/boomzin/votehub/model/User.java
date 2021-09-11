@@ -20,7 +20,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@ToString(callSuper = true, exclude = {"password"})
+@ToString(callSuper = true)
 public class User extends BaseEntity implements HasIdAndEmail {
 
     @Column(name = "email", nullable = false, unique = true)
@@ -37,6 +37,7 @@ public class User extends BaseEntity implements HasIdAndEmail {
 
     @Column(name = "password")
     @Size(min = 4, max = 256)
+    @ToString.Exclude
     private String password;
 
     @Enumerated(EnumType.STRING)
