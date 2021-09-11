@@ -1,7 +1,7 @@
 package org.boomzin.votehub.util;
 
+import org.boomzin.votehub.error.IllegalRequestDataException;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,11 +14,12 @@ public class TimeInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         String theMethod = request.getMethod();
-        boolean isNotAllowedTime = LocalTime.now().isAfter(LocalTime.of(11, 0));
+        LocalTime now = LocalTime.now();
+        boolean isNotAllowedTime = now.isAfter(LocalTime.of(11, 0));
 
         if (isNotAllowedTime & (HttpMethod.PUT.matches(theMethod) || HttpMethod.DELETE.matches(theMethod))) {
-            response.sendError(HttpStatus.METHOD_NOT_ALLOWED.value());
-            return false;
+            throw new IllegalRequestDataException("change of the voting result is possible only up to 11:00 server time" +
+                    ", now " + now.getHour() + ":" + now.getMinute());
         }
         else {
             return true;

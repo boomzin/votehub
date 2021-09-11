@@ -32,7 +32,8 @@ public interface VoteRepository extends JpaRepository<Vote, Integer> {
 
     default Vote checkBelong(int id, int userId) {
         return check(id, userId).orElseThrow(
-                () -> new IllegalRequestDataException("the user's " + userId + " vote " + id + " is not their voting result for today"));
+                () -> new IllegalRequestDataException("You can only change/delete votes for today" +
+                        ", the vote " + id + " is not belong today's voting result for user" + userId));
     }
 
 }

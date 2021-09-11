@@ -18,6 +18,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static org.boomzin.votehub.util.ValidationUtil.assureIdConsistent;
 import static org.boomzin.votehub.util.ValidationUtil.checkNew;
@@ -48,15 +49,16 @@ public class VoteController {
     public ResponseEntity<Vote> createWithLocation(@RequestBody Vote vote, @AuthenticationPrincipal AuthUser authUser) {
         log.info("user {} is voting for restaurant {}", authUser.getUser().getId(), vote.getRestaurant().getId());
         checkNew(vote);
-        if (voteRepository.getActual(authUser.getUser().getId()).isPresent()) {
-            throw new IllegalRequestDataException(voteRepository.getClass().getSimpleName() + "you already have been voted today, voteId is "
-                    + voteRepository.getActual(authUser.getUser().getId()).get().id()
+        Optional<Vote> existedVote = voteRepository.getActual(authUser.getUser().getId());
+        if (existedVote.isPresent()) {
+            throw new IllegalRequestDataException("You already have been voted today, voteId is "
+                    + existedVote.get().id()
                     + ", choose DELETE or PUT method for change your mind");
         }
         if (restaurantRepository.getWithActualMenu(vote.getRestaurant().getId()).isEmpty() ) {
-            throw new IllegalRequestDataException(voteRepository.getClass().getSimpleName() + "the selected restaurant "
+            throw new IllegalRequestDataException("The selected restaurant "
                     + vote.getRestaurant().getId()
-                    + " does not have a menu for today, choose another");
+                    + " does not have a menu for today, choose another one");
         }
         vote.setDescription(vote.getDescription().toLowerCase());
         vote.setDate(LocalDate.now());
