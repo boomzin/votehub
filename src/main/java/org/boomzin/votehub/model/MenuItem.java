@@ -3,9 +3,12 @@ package org.boomzin.votehub.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import org.boomzin.votehub.HasId;
+import org.hibernate.validator.constraints.Currency;
 import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
@@ -20,10 +23,12 @@ import java.time.LocalDate;
 public class MenuItem extends BaseEntity implements HasId {
 
     @Column(name = "date")
+    @NotNull
     private LocalDate date;
 
     @Column(name = "description")
     @Size(min = 2, max = 128)
+    @NotBlank
     private String description;
 
     @Column(name = "price")

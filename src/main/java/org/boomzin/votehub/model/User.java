@@ -8,6 +8,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.List;
@@ -19,21 +20,23 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@ToString(callSuper = true)
+@ToString(callSuper = true, exclude = {"password"})
 public class User extends BaseEntity implements HasIdAndEmail {
 
     @Column(name = "email", nullable = false, unique = true)
     @Email
     @NotEmpty
+    @NotBlank
     @Size(max = 128)
     private String email;
 
     @Column(name = "username")
     @Size(max = 128)
+    @NotBlank
     private String username;
 
     @Column(name = "password")
-    @Size(max = 256)
+    @Size(min = 4, max = 256)
     private String password;
 
     @Enumerated(EnumType.STRING)

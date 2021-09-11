@@ -7,6 +7,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -22,10 +23,12 @@ public class Restaurant extends BaseEntity implements HasId {
 
     @Column(name = "restaurant_name")
     @Size(min = 2, max = 128)
+    @NotBlank
     private String name;
 
     @Column(name = "address")
     @Size(min = 5, max = 128)
+    @NotBlank
     private String address;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")

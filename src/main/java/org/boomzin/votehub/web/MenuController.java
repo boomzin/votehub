@@ -9,6 +9,7 @@ import org.boomzin.votehub.repository.RestaurantRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -30,6 +31,7 @@ public class MenuController {
     private final RestaurantRepository restaurantRepository;
     private final MenuItemRepository menuItemRepository;
 
+    @Transactional
     @PostMapping(value = "/{restaurantId}/menu", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<MenuItem>> createMenuWithLocation(@PathVariable int restaurantId, @RequestBody List<MenuItem> menu) {
         log.info("create menu for restaurant {} for today", restaurantId);
@@ -49,6 +51,7 @@ public class MenuController {
         return ResponseEntity.created(uriOfNewResource).body(menu);
     }
 
+    @Transactional
     @DeleteMapping("/{restaurantId}/menu")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteMenuForCurrentRestaurant(@PathVariable int restaurantId) {
@@ -62,6 +65,7 @@ public class MenuController {
         return menuItemRepository.getActualMenuCurrentRestaurant(restaurantId).get();
     }
 
+    @Transactional
     @PutMapping(value = "/{restaurantId}/menu/menuitem/{menuItemId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void UpdateMenuItem(@PathVariable int restaurantId, @PathVariable int menuItemId, @RequestBody MenuItem menuItem) {
@@ -76,6 +80,7 @@ public class MenuController {
         }
     }
 
+    @Transactional
     @PostMapping(value = "/{restaurantId}/menu/menuitem", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<MenuItem> createMenuItemWithLocation(@PathVariable int restaurantId, @RequestBody MenuItem menuItem) {
         log.info("create menu item for restaurant {} for today", restaurantId);

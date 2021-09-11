@@ -5,6 +5,7 @@ import lombok.*;
 import org.boomzin.votehub.HasId;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
@@ -20,6 +21,7 @@ import java.time.LocalDate;
 public class Vote extends BaseEntity implements HasId {
 
     @Column(name = "date")
+    @NotNull
     private LocalDate date;
 
     @Column(name = "description")
