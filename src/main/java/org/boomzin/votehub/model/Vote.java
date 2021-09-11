@@ -24,7 +24,7 @@ public class Vote extends BaseEntity implements HasId {
 
     @Column(name = "description")
     @Size(min = 2, max = 128)
-    private String name;
+    private String description;
 
     @ManyToOne
     @JsonBackReference(value = "restaurant-votes")
