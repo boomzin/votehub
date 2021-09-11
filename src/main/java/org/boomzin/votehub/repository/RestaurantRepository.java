@@ -13,12 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Transactional(readOnly = true)
-public interface RestaurantRepository extends JpaRepository<Restaurant, Integer> {
-
-    @Transactional
-    @Modifying
-    @Query("DELETE FROM Restaurant r WHERE r.id=:id")
-    int delete(int id);
+public interface RestaurantRepository extends BaseRepository<Restaurant>  {
 
     @EntityGraph(attributePaths = {"menu"}, type = EntityGraph.EntityGraphType.LOAD)
     @Query("SELECT r FROM Restaurant r WHERE r.id=?1")
@@ -26,6 +21,9 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Integer>
 
     @Query("SELECT r FROM Restaurant r JOIN FETCH r.menu m WHERE r.id=?1 AND m.date=?2")
     Optional<Restaurant> getWithMenusOnDate(int id, LocalDate date);
+
+    @Query("SELECT r FROM Restaurant r WHERE r.name=?1 AND r.address=?2")
+    Optional<Restaurant> getByNameAndAddress(String name, String address);
 
     @Query("SELECT r FROM Restaurant r JOIN FETCH r.menu m WHERE r.id=?1 AND m.date=CURRENT_DATE")
     Optional<Restaurant> getWithActualMenu(int id);

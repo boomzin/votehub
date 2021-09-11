@@ -49,7 +49,7 @@ public class VoteController {
 
     @Transactional
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Vote> createWithLocation(@RequestBody Vote vote, @AuthenticationPrincipal AuthUser authUser) {
+    public ResponseEntity<Vote> createWithLocation(@Valid @RequestBody Vote vote, @AuthenticationPrincipal AuthUser authUser) {
         log.info("user {} is voting for restaurant {}", authUser.getUser().getId(), vote.getRestaurant().getId());
         checkNew(vote);
         Optional<Vote> existedVote = voteRepository.getActual(authUser.getUser().getId());
@@ -58,12 +58,7 @@ public class VoteController {
                     + existedVote.get().id()
                     + ", choose DELETE or PUT method for change your mind");
         }
-        if (restaurantRepository.getWithActualMenu(vote.getRestaurant().getId()).isEmpty() ) {
-            throw new IllegalRequestDataException("The selected restaurant "
-                    + vote.getRestaurant().getId()
-                    + " does not have a menu for today, choose another one");
-        }
-        vote.setDescription(vote.getDescription().toLowerCase());
+        checkRestaurantHasMenu(vote);
         vote.setDate(LocalDate.now());
         vote.setUser(authUser.getUser());
         vote.setRestaurant(restaurantRepository.findById(vote.getRestaurant().getId()).get());
@@ -74,6 +69,14 @@ public class VoteController {
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
+    private void checkRestaurantHasMenu(Vote vote) {
+        if (restaurantRepository.getWithActualMenu(vote.getRestaurant().getId()).isEmpty() ) {
+            throw new IllegalRequestDataException("The selected restaurant "
+                    + vote.getRestaurant().getId()
+                    + " does not have a menu for today, choose another one");
+        }
+    }
+
     @Transactional
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -81,8 +84,8 @@ public class VoteController {
         int userId = authUser.id();
         log.info("update {} for user {}", vote, userId);
         assureIdConsistent(vote, id);
+        checkRestaurantHasMenu(vote);
         voteRepository.checkBelong(id, userId);
-        vote.setDescription(vote.getDescription().toLowerCase());
         vote.setDate(LocalDate.now());
         vote.setUser(authUser.getUser());
         vote.setRestaurant(restaurantRepository.findById(vote.getRestaurant().getId()).get());

@@ -5,15 +5,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.boomzin.votehub.model.Restaurant;
 import org.boomzin.votehub.repository.RestaurantRepository;
 import org.boomzin.votehub.to.RestaurantWithRating;
+import org.boomzin.votehub.web.user.UniqueMailValidator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
@@ -29,6 +33,13 @@ public class RestaurantController {
     static final String REST_URL = "/api/restaurants";
 
     private final RestaurantRepository restaurantRepository;
+
+    private UniqueNameAddressValidator nameAddressValidator;
+
+    @InitBinder
+    protected void initBinder(WebDataBinder binder) {
+        binder.addValidators(nameAddressValidator);
+    }
 
     @GetMapping
     public List<Restaurant> getAll() {
@@ -76,14 +87,13 @@ public class RestaurantController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
         log.info("delete {}", id);
-        restaurantRepository.delete(id);
+        restaurantRepository.deleteExisted(id);
     }
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Restaurant> createWithLocation(@RequestBody Restaurant restaurant) {
+    public ResponseEntity<Restaurant> createWithLocation(@Valid @RequestBody Restaurant restaurant) {
         log.info("create {}", restaurant);
         checkNew(restaurant);
-        // TODO: add name_address unique validator
-        restaurant.setName(restaurant.getAddress().toLowerCase());
+        restaurant.setName(restaurant.getName().toLowerCase());
         restaurant.setAddress(restaurant.getAddress().toLowerCase());
         Restaurant created = restaurantRepository.save(restaurant);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -95,7 +105,7 @@ public class RestaurantController {
     @Transactional
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@RequestBody Restaurant restaurant, @PathVariable int id) {
+    public void update(@Valid @RequestBody Restaurant restaurant, @PathVariable int id) {
         log.info("update {} with id={}", restaurant, id);
         assureIdConsistent(restaurant, id);
         restaurant.setName(restaurant.getAddress().toLowerCase());

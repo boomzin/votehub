@@ -3,6 +3,7 @@ package org.boomzin.votehub.util;
 import lombok.experimental.UtilityClass;
 import org.boomzin.votehub.HasId;
 import org.boomzin.votehub.error.IllegalRequestDataException;
+import org.boomzin.votehub.error.NotFoundException;
 
 @UtilityClass
 public class ValidationUtil {
@@ -19,6 +20,11 @@ public class ValidationUtil {
             bean.setId(id);
         } else if (bean.id() != id) {
             throw new IllegalRequestDataException(bean.getClass().getSimpleName() + " must has id=" + id);
+        }
+    }
+    public static void checkModification(int count, int id) {
+        if (count == 0) {
+            throw new NotFoundException("Entity with id=" + id + " not found");
         }
     }
 }
