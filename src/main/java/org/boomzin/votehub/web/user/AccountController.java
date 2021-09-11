@@ -1,8 +1,9 @@
-package org.boomzin.votehub.web;
+package org.boomzin.votehub.web.user;
 
 import lombok.extern.slf4j.Slf4j;
 import org.boomzin.votehub.model.Role;
 import org.boomzin.votehub.model.User;
+import org.boomzin.votehub.web.AuthUser;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

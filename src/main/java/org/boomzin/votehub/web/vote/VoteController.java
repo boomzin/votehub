@@ -1,4 +1,4 @@
-package org.boomzin.votehub.web;
+package org.boomzin.votehub.web.vote;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -7,6 +7,7 @@ import org.boomzin.votehub.model.Vote;
 import org.boomzin.votehub.repository.RestaurantRepository;
 import org.boomzin.votehub.repository.VoteRepository;
 import org.boomzin.votehub.to.VoteTo;
+import org.boomzin.votehub.web.AuthUser;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

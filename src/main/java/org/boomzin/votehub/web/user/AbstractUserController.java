@@ -1,4 +1,4 @@
-package org.boomzin.votehub.web;
+package org.boomzin.votehub.web.user;
 
 import lombok.extern.slf4j.Slf4j;
 import org.boomzin.votehub.model.User;
