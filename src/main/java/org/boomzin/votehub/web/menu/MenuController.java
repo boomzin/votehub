@@ -106,13 +106,15 @@ public class MenuController {
     @CacheEvict(cacheNames = "menu", allEntries = true)
     public ResponseEntity<MenuItem> createMenuItemWithLocation(@PathVariable int restaurantId, @Valid @RequestBody MenuItem menuItem) {
         log.info("create menu item for restaurant {} for today", restaurantId);
-        List<MenuItem> actualMenu = menuItemRepository.getActualMenuCurrentRestaurant(restaurantId).get();
-        Set<String> descriptions = actualMenu.stream()
-                .map(e -> e.getDescription().toLowerCase())
-                .collect(Collectors.toSet());
-        descriptions.add(menuItem.getDescription().toLowerCase());
-        if (descriptions.size() == actualMenu.size()) {
-            throw new IllegalRequestDataException("Menu already contains this item, use method PUT to change price");
+        if (menuItemRepository.getActualMenuCurrentRestaurant(restaurantId).isPresent()) {
+            List<MenuItem> actualMenu = menuItemRepository.getActualMenuCurrentRestaurant(restaurantId).get();
+            Set<String> descriptions = actualMenu.stream()
+                    .map(e -> e.getDescription().toLowerCase())
+                    .collect(Collectors.toSet());
+            descriptions.add(menuItem.getDescription().toLowerCase());
+            if (descriptions.size() == actualMenu.size()) {
+                throw new IllegalRequestDataException("Menu already contains this item, use method PUT to change price");
+            }
         }
         Restaurant restaurant = restaurantRepository.getById(restaurantId);
         checkNew(menuItem);
