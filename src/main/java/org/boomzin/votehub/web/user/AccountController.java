@@ -23,7 +23,7 @@ import static org.boomzin.votehub.util.ValidationUtil.checkNew;
 @RequestMapping(value = AccountController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 public class AccountController extends AbstractUserController {
-    static final String REST_URL = "/api/account";
+    static final String REST_URL = "/api/users/account";
 
     @GetMapping
     public User get(@AuthenticationPrincipal AuthUser authUser) {

@@ -51,15 +51,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/api/admin/**").hasRole(Role.ADMIN.name())
-                .antMatchers("/api/account/**").authenticated()
+                .antMatchers("/api/users/admin/**").hasRole(Role.ADMIN.name())
+                .antMatchers("/api//users/account/**").authenticated()
                 .antMatchers("/api/votes/**").authenticated()
-                .antMatchers(HttpMethod.POST, "/api/account").anonymous()
+                .antMatchers(HttpMethod.POST, "/api/users/account").anonymous()
                 .antMatchers(HttpMethod.GET, "/api/restaurants/*").anonymous()
-                .antMatchers(HttpMethod.GET, "/api/restaurants/**/with-votes*").hasRole(Role.ADMIN.name())
-                .antMatchers(HttpMethod.DELETE, "/api/restaurants/**").hasRole(Role.ADMIN.name())
-                .antMatchers(HttpMethod.POST, "/api/restaurants/**").hasRole(Role.ADMIN.name())
-                .antMatchers(HttpMethod.PUT, "/api/restaurants/**").hasRole(Role.ADMIN.name())
+                .antMatchers("/api/restaurants/admin/**").hasRole(Role.ADMIN.name())
                 .and().httpBasic()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().csrf().disable();

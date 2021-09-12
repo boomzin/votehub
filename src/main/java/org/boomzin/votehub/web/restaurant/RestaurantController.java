@@ -83,13 +83,14 @@ public class RestaurantController {
         return ResponseEntity.of(restaurantRepository.getAllWithMenuOnDate(date));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/admin/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
         log.info("delete {}", id);
         restaurantRepository.deleteExisted(id);
     }
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+
+    @PostMapping(value = "/admin", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Restaurant> createWithLocation(@Valid @RequestBody Restaurant restaurant) {
         log.info("create {}", restaurant);
         checkNew(restaurant);
@@ -103,7 +104,7 @@ public class RestaurantController {
     }
 
     @Transactional
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/admin/{io}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@Valid @RequestBody Restaurant restaurant, @PathVariable int id) {
         log.info("update {} with id={}", restaurant, id);
@@ -125,30 +126,30 @@ public class RestaurantController {
         return restaurantRepository.getActualRating().get();
     }
 
-    @GetMapping("/{id}/with-votes")
+    @GetMapping("/admin/{id}/with-votes")
     public Restaurant getWithVotes(@PathVariable int id) {
         log.info("get restaurant {} with votes", id);
         return restaurantRepository.getWithVotes(id).get();
     }
 
-    @GetMapping("/{id}/with-votes-actual")
+    @GetMapping("/admin/{id}/with-votes-actual")
     public Restaurant getWithActualVotes(@PathVariable int id) {
         log.info("get restaurant {} with votes for today", id);
         return restaurantRepository.getWithActualVotes(id).get();
     }
 
-    @GetMapping("/{id}/with-votes-on-date")
+    @GetMapping("/admin/{id}/with-votes-on-date")
     public Restaurant getWithVotesOnDate (@PathVariable int id, LocalDate date) {
         log.info("get restaurant {} with votes on date {}", id, date);
         return restaurantRepository.getWithVotesOnDate(id, date).get();
     }
-    @GetMapping("/with-votes-actual")
+    @GetMapping("/admin/with-votes-actual")
     public List<Restaurant> getAllWithActualVotes() {
         log.info("get restaurants with votes for today");
         return restaurantRepository.getAllWithActualVotes().get();
     }
 
-    @GetMapping("/with-votes-on-date")
+    @GetMapping("/admin/with-votes-on-date")
     public List<Restaurant> getWithVotesOnDate (LocalDate date) {
         log.info("get restaurants with votes on date {}", date);
         return restaurantRepository.getAllWithVotesOnDate(date).get();

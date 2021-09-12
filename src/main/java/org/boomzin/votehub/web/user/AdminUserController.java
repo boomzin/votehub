@@ -24,7 +24,7 @@ import static org.boomzin.votehub.config.WebSecurityConfig.PASSWORD_ENCODER;
 @Slf4j
 public class AdminUserController extends AbstractUserController {
 
-    static final String REST_URL = "/api/admin/users";
+    static final String REST_URL = "/api/users/admin";
 
     @Override
     @GetMapping("/{id}")
