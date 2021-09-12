@@ -16,10 +16,10 @@ Spring/JPA application with authorization and role-based access rights without f
   - create, delete, and change price for single actual menu item, view menu items archives;
   - view vote history.
 - Regular users are allowed:
-  - delete, view and change their own account;
-  - delete, view and change their own voting result for current day.
+  - create, delete, view and change their own account;
+  - create, delete, view and change their own voting result for current day.
 - Anonymous user are allowed:
-  - create their own account in order to register;
+  - register in order to create their own account;
   - view list of restaurants with menu and rating including archive.
 - Menu changes each day (admins do the updates). Each restaurant provides a new menu each day.
 - Users can vote on which restaurant they want to have lunch at, and view the today rating
