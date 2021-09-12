@@ -16,7 +16,7 @@ VALUES ('Restaurant1', 'Restaurant1Address'),
        ('Restaurant2', 'Restaurant2Address'),
        ('Restaurant3', 'Restaurant3Address');
 
-INSERT INTO MENU_ITEM (DATE, DESCRIPTION, PRICE, RESTAURANT_ID)
+INSERT INTO MENU_ITEM (MENU_DATE, DESCRIPTION, PRICE, RESTAURANT_ID)
 VALUES ('2021-09-01', 'First day rest1 dish1', 10, 1),
        ('2021-09-01', 'First day rest1 dish2', 15, 1),
        ('2021-09-01', 'First day rest1 dish3', 17, 1),
@@ -36,13 +36,27 @@ VALUES ('2021-09-01', 'First day rest1 dish1', 10, 1),
        ('2021-09-02', 'Second day rest3 dish2', 17, 3),
        ('2021-09-02', 'Second day rest3 dish3', 17, 3),
        ('2021-09-02', 'Second day rest3 dish4', 17, 3),
-       ('2021-09-02', 'Second day rest3 dish5', 17, 3);
+       ('2021-09-02', 'Second day rest3 dish5', 17, 3),
+       (now(), 'Today rest1 dish1', 10, 1),
+       (now(), 'Today rest1 dish2', 15, 1),
+       (now(), 'Today rest1 dish3', 15, 1),
+       (now(), 'Today rest2 dish1', 15, 2),
+       (now(), 'Today rest2 dish2', 15, 2),
+       (now(), 'Today rest2 dish3', 15, 2),
+       (now(), 'Today rest3 dish1', 15, 3),
+       (now(), 'Today rest3 dish2', 15, 3),
+       (now(), 'Today rest3 dish3', 15, 3),
+       (now(), 'Today rest3 dish4', 17, 3);
 
-INSERT INTO VOTE (DATE, DESCRIPTION, RESTAURANT_ID, USER_ID)
+INSERT INTO VOTE (VOTE_DATE, DESCRIPTION, RESTAURANT_ID, USER_ID)
 VALUES ( '2021-09-01', 'day1 user1 rest2', 2, 1),
        ( '2021-09-01', 'day1 user2 rest2', 2, 2),
        ( '2021-09-01', 'day1 user3 rest1', 1, 3),
        ( '2021-09-01', 'day1 admin rest3', 3, 4),
        ( '2021-09-02', 'day2 user1 rest2', 2, 1),
        ( '2021-09-02', 'day2 user2 rest1', 1, 2),
-       ( '2021-09-02', 'day2 user3 rest2', 2, 3);
+       ( '2021-09-02', 'day2 user3 rest2', 2, 3),
+       ( now(), 'today user1 rest1', 1, 1),
+       ( now(), 'today user2 rest1', 1, 2),
+       ( now(), 'today admin rest1', 1, 4),
+       ( now(), 'today user3 rest2', 2, 3);

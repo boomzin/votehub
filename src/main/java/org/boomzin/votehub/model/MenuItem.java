@@ -3,7 +3,6 @@ package org.boomzin.votehub.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import org.boomzin.votehub.HasId;
-import org.hibernate.validator.constraints.Currency;
 import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
@@ -14,7 +13,7 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "menu_item", uniqueConstraints = @UniqueConstraint(name = "menu_item_unique_date_description",
-        columnNames = {"date", "description"}))
+        columnNames = {"restaurant_id", "menu_date", "description"}))
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -22,7 +21,7 @@ import java.time.LocalDate;
 @ToString(callSuper = true)
 public class MenuItem extends BaseEntity implements HasId {
 
-    @Column(name = "date")
+    @Column(name = "menu_date")
     @NotNull
     private LocalDate date;
 

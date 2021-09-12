@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 @Table(name = "vote", uniqueConstraints = @UniqueConstraint(name = "votes_date_userId",
-        columnNames = {"date", "user_id"}))
+        columnNames = {"vote_date", "user_id"}))
 @Entity
 
 @Getter
@@ -20,7 +20,7 @@ import java.time.LocalDate;
 @ToString(callSuper = true)
 public class Vote extends BaseEntity implements HasId {
 
-    @Column(name = "date")
+    @Column(name = "vote_date")
     @NotNull
     private LocalDate date;
 
