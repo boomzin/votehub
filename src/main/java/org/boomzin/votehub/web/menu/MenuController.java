@@ -33,7 +33,7 @@ import static org.boomzin.votehub.util.ValidationUtil.checkNew;
 @Slf4j
 @AllArgsConstructor
 public class MenuController {
-    static final String REST_URL = "/api/restaurants";
+    static final String REST_URL = "/api/restaurants/admin";
 
     private final RestaurantRepository restaurantRepository;
     private final MenuItemRepository menuItemRepository;
