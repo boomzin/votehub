@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.boomzin.votehub.model.Role;
 import org.boomzin.votehub.model.User;
 import org.boomzin.votehub.web.AuthUser;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,7 @@ import static org.boomzin.votehub.util.ValidationUtil.checkNew;
 @RestController
 @RequestMapping(value = AccountController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
+@CacheConfig(cacheNames = "users")
 public class AccountController extends AbstractUserController {
     static final String REST_URL = "/api/users/account";
 
@@ -39,6 +42,7 @@ public class AccountController extends AbstractUserController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
+    @CacheEvict(allEntries = true)
     public ResponseEntity<User> register(@RequestBody User user) {
         log.info("register {}", user);
         checkNew(user);
@@ -54,6 +58,7 @@ public class AccountController extends AbstractUserController {
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional
+    @CacheEvict(allEntries = true)
     public void update(@RequestBody User user, @AuthenticationPrincipal AuthUser authUser) {
         assureIdConsistent(user, authUser.id());
         User updated = authUser.getUser();

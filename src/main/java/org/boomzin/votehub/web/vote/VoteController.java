@@ -8,6 +8,7 @@ import org.boomzin.votehub.repository.RestaurantRepository;
 import org.boomzin.votehub.repository.VoteRepository;
 import org.boomzin.votehub.to.VoteTo;
 import org.boomzin.votehub.web.AuthUser;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -49,6 +50,7 @@ public class VoteController {
 
     @Transactional
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @CacheEvict(cacheNames = "restaurants")
     public ResponseEntity<Vote> createWithLocation(@Valid @RequestBody Vote vote, @AuthenticationPrincipal AuthUser authUser) {
         log.info("user {} is voting for restaurant {}", authUser.getUser().getId(), vote.getRestaurant().getId());
         checkNew(vote);
@@ -80,6 +82,7 @@ public class VoteController {
     @Transactional
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @CacheEvict(cacheNames = "restaurants")
     public void update(@AuthenticationPrincipal AuthUser authUser, @Valid @RequestBody Vote vote, @PathVariable int id) {
         int userId = authUser.id();
         log.info("update {} for user {}", vote, userId);
@@ -94,6 +97,7 @@ public class VoteController {
 
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @CacheEvict(cacheNames = "restaurants")
     public void delete(@AuthenticationPrincipal AuthUser authUser, @PathVariable int id) {
         int userId = authUser.id();
         log.info("delete vote {} for user {}", id, userId);

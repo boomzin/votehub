@@ -5,8 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.boomzin.votehub.model.Restaurant;
 import org.boomzin.votehub.repository.RestaurantRepository;
 import org.boomzin.votehub.to.RestaurantWithRating;
-import org.boomzin.votehub.web.user.UniqueMailValidator;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,7 @@ import static org.boomzin.votehub.util.ValidationUtil.checkNew;
 @RequestMapping(value = RestaurantController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 @AllArgsConstructor
+@CacheConfig(cacheNames = {"menu", "restaurants"})
 public class RestaurantController {
     static final String REST_URL = "/api/restaurants";
 
@@ -42,6 +44,7 @@ public class RestaurantController {
     }
 
     @GetMapping
+    @Cacheable(cacheNames = "restaurants")
     public List<Restaurant> getAll() {
         log.info("getAll");
         return restaurantRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
@@ -54,6 +57,7 @@ public class RestaurantController {
     }
 
     @GetMapping("/{id}/with-menus")
+    @Cacheable(cacheNames = "menu")
     public ResponseEntity<Restaurant> getWithMenus(@PathVariable int id) {
         log.info("get id {} with menus", id);
         return ResponseEntity.of(restaurantRepository.getWithMenus(id));
@@ -66,12 +70,14 @@ public class RestaurantController {
     }
 
     @GetMapping("/{id}/with-actual-menu")
+    @Cacheable(cacheNames = "menu")
     public ResponseEntity<Restaurant> getWithActualMenu(@PathVariable int id) {
         log.info("get id {} with menu on today", id);
         return ResponseEntity.of(restaurantRepository.getWithActualMenu(id));
     }
 
     @GetMapping("/with-actual-menu")
+    @Cacheable(cacheNames = "menu")
     public ResponseEntity<List<Restaurant>> getAllWithActualMenu() {
         log.info("getAll with menu on today");
         return ResponseEntity.of(restaurantRepository.getAllWithActualMenu());
@@ -84,6 +90,7 @@ public class RestaurantController {
     }
 
     @DeleteMapping("/admin/{id}")
+    @CacheEvict(cacheNames = {"menu", "restaurants"}, allEntries = true)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
         log.info("delete {}", id);
@@ -91,6 +98,7 @@ public class RestaurantController {
     }
 
     @PostMapping(value = "/admin", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @CacheEvict(cacheNames = "restaurants", allEntries = true)
     public ResponseEntity<Restaurant> createWithLocation(@Valid @RequestBody Restaurant restaurant) {
         log.info("create {}", restaurant);
         checkNew(restaurant);
@@ -104,13 +112,16 @@ public class RestaurantController {
     }
 
     @Transactional
-    @PutMapping(value = "/admin/{io}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/admin/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @CacheEvict(cacheNames = "restaurants", allEntries = true)
     public void update(@Valid @RequestBody Restaurant restaurant, @PathVariable int id) {
         log.info("update {} with id={}", restaurant, id);
         assureIdConsistent(restaurant, id);
         restaurant.setName(restaurant.getAddress().toLowerCase());
         restaurant.setAddress(restaurant.getAddress().toLowerCase());
+        restaurant.setMenu(null);
+        restaurant.setVotes(null);
         restaurantRepository.save(restaurant);
     }
 
@@ -121,6 +132,7 @@ public class RestaurantController {
     }
 
     @GetMapping("/actual-rating")
+    @Cacheable(cacheNames = "restaurants")
     public List<RestaurantWithRating> getRatingOnDate() {
         log.info("get rating for today");
         return restaurantRepository.getActualRating().get();
