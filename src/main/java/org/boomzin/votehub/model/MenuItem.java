@@ -6,9 +6,8 @@ import org.boomzin.votehub.HasId;
 import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -31,8 +30,10 @@ public class MenuItem extends BaseEntity implements HasId {
     private String description;
 
     @Column(name = "price")
-    @Range(min = 1, max = 10000)
-    private Integer price;
+//    https://www.baeldung.com/javax-bigdecimal-validation
+    @DecimalMin(value = "0.0", inclusive = false)
+    @Digits(integer=4, fraction=2)
+    private BigDecimal price;
 
     @ManyToOne
     @JsonBackReference(value = "restaurant-menus")
