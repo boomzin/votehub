@@ -39,16 +39,18 @@ public class MenuController {
 
     @Transactional
     @PostMapping(value = "/{restaurantId}/menu", consumes = MediaType.APPLICATION_JSON_VALUE)
-// TODO: validate collection doesn't work
-    public ResponseEntity<List<MenuItem>> createMenuWithLocation(@PathVariable int restaurantId, @RequestBody List<MenuItem> menu) {
+    public ResponseEntity<List<MenuItem>> createMenuWithLocation(@PathVariable int restaurantId, @Valid @RequestBody Menu menu) {
         log.info("create menu for restaurant {} for today", restaurantId);
-        Set<String> descriptions = menu.stream().map(x -> x.getDescription().toLowerCase()).collect(Collectors.toSet());
-        if (descriptions.size() != menu.size()) {
+        Set<String> descriptions = menu.getList().stream()
+                .map(e -> e.getDescription()
+                .toLowerCase())
+                .collect(Collectors.toSet());
+        if (descriptions.size() != menu.getList().size()) {
             throw new IllegalRequestDataException("Menu contains not unique dishes");
         }
         menuItemRepository.deleteAllActualItemsForRestaurant(restaurantId);
         Restaurant restaurant = restaurantRepository.getById(restaurantId);
-        for (MenuItem menuItem : menu) {
+        for (MenuItem menuItem : menu.getList()) {
             checkNew(menuItem);
             menuItem.setDate(LocalDate.now());
             menuItem.setDescription(menuItem.getDescription().toLowerCase());
@@ -58,7 +60,7 @@ public class MenuController {
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{restaurantId}/menu")
                 .buildAndExpand(restaurantId).toUri();
-        return ResponseEntity.created(uriOfNewResource).body(menu);
+        return ResponseEntity.created(uriOfNewResource).body(menu.getList());
     }
 
     @Transactional
@@ -70,9 +72,11 @@ public class MenuController {
     }
 
     @GetMapping("/{restaurantId}/menu")
-    public List<MenuItem> getActualMenuForCurrentRestaurant (@PathVariable int restaurantId) {
+    public Menu getActualMenuForCurrentRestaurant (@PathVariable int restaurantId) {
         log.info("get actual menu for restaurant {}", restaurantId);
-        return menuItemRepository.getActualMenuCurrentRestaurant(restaurantId).get();
+        Menu menu = new Menu();
+        menu.setList(menuItemRepository.getActualMenuCurrentRestaurant(restaurantId).get());
+        return menu;
     }
 
     @Transactional
@@ -98,7 +102,9 @@ public class MenuController {
     public ResponseEntity<MenuItem> createMenuItemWithLocation(@PathVariable int restaurantId, @Valid @RequestBody MenuItem menuItem) {
         log.info("create menu item for restaurant {} for today", restaurantId);
         List<MenuItem> actualMenu = menuItemRepository.getActualMenuCurrentRestaurant(restaurantId).get();
-        Set<String> descriptions = actualMenu.stream().map(x -> x.getDescription().toLowerCase()).collect(Collectors.toSet());
+        Set<String> descriptions = actualMenu.stream()
+                .map(e -> e.getDescription().toLowerCase())
+                .collect(Collectors.toSet());
         descriptions.add(menuItem.getDescription().toLowerCase());
         if (descriptions.size() == actualMenu.size()) {
             throw new IllegalRequestDataException("Menu already contains this item, use method PUT to change price");
