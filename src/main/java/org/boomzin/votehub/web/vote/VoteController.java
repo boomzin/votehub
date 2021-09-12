@@ -72,7 +72,7 @@ public class VoteController {
     }
 
     private void checkRestaurantHasMenu(Vote vote) {
-        if (restaurantRepository.getWithActualMenu(vote.getRestaurant().getId()).isEmpty() ) {
+        if (!restaurantRepository.getWithActualMenu(vote.getRestaurant().getId()).isPresent() ) {
             throw new IllegalRequestDataException("The selected restaurant "
                     + vote.getRestaurant().getId()
                     + " does not have a menu for today, choose another one");
