@@ -59,7 +59,7 @@ Spring/JPA application with authorization and role-based access rights without f
 
 #### Voting process by Users
 - Authorized user vote for the restaurant using POST method. If there is a vote of this user for the current date, then an exception is thrown;
-- Class `TimeInterceptor implements HandlerInterceptor` checks time. If it's before 11-00 methods PUT and DELETE method are allowed, and user is available to change their mind. Else throw exception.
+- Class `TimeInterceptor implements HandlerInterceptor` checks time. If it's before 11-00 PUT and DELETE methods are allowed, and user is available to change their mind. Else throw exception.
 
 
 -------------------
