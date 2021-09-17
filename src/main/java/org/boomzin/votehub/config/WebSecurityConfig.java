@@ -52,7 +52,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/api/users/admin/**").hasRole(Role.ADMIN.name())
-                .antMatchers("/api//users/account/**").authenticated()
+                .antMatchers("/api/users/account/**").authenticated()
                 .antMatchers("/api/votes/**").authenticated()
                 .antMatchers(HttpMethod.POST, "/api/users/account").anonymous()
                 .antMatchers(HttpMethod.GET, "/api/restaurants/*").anonymous()
