@@ -6,7 +6,7 @@ Spring/JPA application with authorization and role-based access rights without f
 
 ### Application capabilities:
 - 3 types of users: 
-    - admin;
+    - administrator;
     - regular users;
     - anonymous user.
 - Admins are allowed:
@@ -30,8 +30,15 @@ Spring/JPA application with authorization and role-based access rights without f
 -------------------
 
 ### REST API documentation prepared by Swagger is available on started application
-> - Run Application `RestaurantVotingApplication`
-> - Open API documentation by link: <a href="localhost:8080/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config#/">localhost:8080/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config#/</a>
+- Run Application `RestaurantVotingApplication`
+- Open API documentation by link: <a href="localhost:8080/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config#/">localhost:8080/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config#/</a>
+- User credentials:
+    * administrator:
+      * email: admin@gmail.com
+      * password: admin
+    * regular user:
+        * email: user1@gmail.com
+        * password: user1pass
 
 -------------------
 
