@@ -5,14 +5,14 @@ import lombok.*;
 import org.boomzin.votehub.HasIdAndEmail;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
@@ -55,7 +55,23 @@ public class User extends BaseEntity implements HasIdAndEmail {
     @ToString.Exclude
     private List<Vote> votes;
 
+    public User(int id, String username, String email, String password, Role role, Role... roles) {
+        this(id, username, email, password, EnumSet.of(role, roles));
+    }
+
+    public User(Integer id, String username, String email, String password, Collection<Role> roles) {
+        super(id);
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        setRoles(roles);
+    }
     public boolean addOrRemoveRole(Role role) {
         return roles.contains(role) ? roles.remove(role) : roles.add(role);
     }
+
+    public void setRoles(Collection<Role> roles) {
+        this.roles = CollectionUtils.isEmpty(roles) ? EnumSet.noneOf(Role.class) : EnumSet.copyOf(roles);
+    }
+
 }
