@@ -36,7 +36,7 @@ public class VoteController {
     @GetMapping()
     public List<VoteTo> getAll (@AuthenticationPrincipal AuthUser authUser) {
         log.info("get vote for user {}", authUser.getUser().getId());
-        return voteRepository.getAll(authUser.getUser().getId()).get();
+        return voteRepository.getAll(authUser.getUser().getId());
     }
 
     @GetMapping("/today")

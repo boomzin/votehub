@@ -110,12 +110,12 @@ public class AdminRestaurantController {
     @GetMapping("/with-votes-actual")
     public List<Restaurant> getAllWithActualVotes() {
         log.info("get restaurants with votes for today");
-        return restaurantRepository.getAllWithVotesOnDate(LocalDate.now()).get();
+        return restaurantRepository.getAllWithVotesOnDate(LocalDate.now());
     }
 
     @GetMapping("/with-votes-on-date")
     public List<Restaurant> getAllWithVotesOnDate (LocalDate date) {
         log.info("get restaurants with votes on date {}", date);
-        return restaurantRepository.getAllWithVotesOnDate(date).get();
+        return restaurantRepository.getAllWithVotesOnDate(date);
     }
 }

@@ -24,7 +24,7 @@ public interface RestaurantRepository extends BaseRepository<Restaurant>  {
     Optional<Restaurant> getByNameAndAddress(String name, String address);
 
     @Query("SELECT DISTINCT r FROM Restaurant r JOIN FETCH r.menu m WHERE m.date=?1")
-    Optional<List<Restaurant>> getAllWithMenuOnDate(LocalDate date);
+    List<Restaurant> getAllWithMenuOnDate(LocalDate date);
 
     @EntityGraph(attributePaths = {"votes"}, type = EntityGraph.EntityGraphType.LOAD)
     @Query("SELECT r FROM Restaurant r WHERE r.id=?1")
@@ -34,10 +34,10 @@ public interface RestaurantRepository extends BaseRepository<Restaurant>  {
     Optional<Restaurant> getWithVotesOnDate(int id, LocalDate date);
 
     @Query("SELECT DISTINCT r FROM Restaurant r JOIN FETCH r.votes v WHERE v.date=?1")
-    Optional<List<Restaurant>> getAllWithVotesOnDate(LocalDate date);
+    List<Restaurant> getAllWithVotesOnDate(LocalDate date);
 
 //    https://www.baeldung.com/jpa-queries-custom-result-with-aggregation-functions
     @Query("SELECT DISTINCT r AS restaurantInRating, count (v) as rating " +
             "FROM Restaurant r LEFT JOIN r.votes v WHERE v.date=?1 GROUP BY r ORDER BY rating DESC")
-    Optional<List<RestaurantWithRating>> getRatingOnDate(LocalDate date);
+    List<RestaurantWithRating> getRatingOnDate(LocalDate date);
 }

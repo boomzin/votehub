@@ -66,25 +66,25 @@ public class RestaurantController {
     @Cacheable(cacheNames = "menu")
     public ResponseEntity<List<Restaurant>> getAllWithActualMenu() {
         log.info("getAll with menu on today");
-        return ResponseEntity.of(restaurantRepository.getAllWithMenuOnDate(LocalDate.now()));
+        return ResponseEntity.ok(restaurantRepository.getAllWithMenuOnDate(LocalDate.now()));
     }
 
     @GetMapping("/with-menu-on-date")
     public ResponseEntity<List<Restaurant>> getAllWithMenuOnDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         log.info("getAll with menu on date {}", date);
-        return ResponseEntity.of(restaurantRepository.getAllWithMenuOnDate(date));
+        return ResponseEntity.ok(restaurantRepository.getAllWithMenuOnDate(date));
     }
 
     @GetMapping("/rating-on-date")
     public List<RestaurantWithRating> getRatingOnDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         log.info("get rating on date {}", date);
-        return restaurantRepository.getRatingOnDate(date).get();
+        return restaurantRepository.getRatingOnDate(date);
     }
 
     @GetMapping("/actual-rating")
     @Cacheable(cacheNames = "restaurants")
     public List<RestaurantWithRating> getRatingOnDate() {
         log.info("get rating for today");
-        return restaurantRepository.getRatingOnDate(LocalDate.now()).get();
+        return restaurantRepository.getRatingOnDate(LocalDate.now());
     }
 }

@@ -29,5 +29,5 @@ public interface VoteRepository extends JpaRepository<Vote, Integer> {
     Optional<Vote> getByDate (int userId, LocalDate date);
 
     @Query("SELECT v AS vote, v.restaurant.id AS restaurantId FROM Vote v WHERE v.user.id=?1")
-    Optional<List<VoteTo>> getAll(int userId);
+    List<VoteTo> getAll(int userId);
 }
