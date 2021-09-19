@@ -82,7 +82,6 @@ public class RestaurantController {
     }
 
     @GetMapping("/actual-rating")
-    @Cacheable(cacheNames = "restaurants")
     public List<RestaurantWithRating> getRatingOnDate() {
         log.info("get rating for today");
         return restaurantRepository.getRatingOnDate(LocalDate.now());

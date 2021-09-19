@@ -57,6 +57,6 @@ VALUES ( '2021-09-01', 'day1 user1 rest2', 2, 1),
        ( '2021-09-02', 'day2 user2 rest1', 1, 2),
        ( '2021-09-02', 'day2 user3 rest2', 2, 3),
        ( now(), 'today user1 rest1', 1, 1),
-       ( now(), 'today user2 rest1', 1, 2),
-       ( now(), 'today admin rest1', 1, 4),
-       ( now(), 'today user3 rest2', 2, 3);
+       ( now(), 'today user2 rest2', 2, 2),
+       ( now(), 'today admin rest1', 1, 4);
+

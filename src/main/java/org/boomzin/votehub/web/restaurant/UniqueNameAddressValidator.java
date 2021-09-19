@@ -24,7 +24,7 @@ public class UniqueNameAddressValidator implements org.springframework.validatio
     public void validate(@NonNull Object target, @NonNull Errors errors) {
         Restaurant restaurant = ((Restaurant) target);
         if (StringUtils.hasText(restaurant.getName()) && StringUtils.hasText(restaurant.getAddress())) {
-            repository.getByNameAndAddress(restaurant.getName().toLowerCase(), restaurant.getAddress().toLowerCase())
+            repository.getByNameAndAddress(restaurant.getName(), restaurant.getAddress())
                     .ifPresent(dbRestaurant -> {
                         throw new IllegalRequestDataException("The restaurant with name "
                         + dbRestaurant.getName()

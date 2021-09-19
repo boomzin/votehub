@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.validation.Valid;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
@@ -40,7 +39,7 @@ public class VoteController {
     }
 
     @GetMapping("/today")
-    public Vote getByToday (@AuthenticationPrincipal AuthUser authUser,@Valid @RequestParam LocalDate Date) {
+    public Vote getByToday (@AuthenticationPrincipal AuthUser authUser, @RequestParam LocalDate Date) {
         log.info("get vote for user {} fo today", authUser.getUser().getId());
         return voteRepository.getByDate(authUser.getUser().getId(), LocalDate.now()).get();
     }
@@ -52,9 +51,9 @@ public class VoteController {
     }
 
     @Transactional
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    @CacheEvict(cacheNames = "restaurants")
-    public ResponseEntity<Vote> createWithLocation(@Valid @RequestBody int restaurantId, @AuthenticationPrincipal AuthUser authUser) {
+    @PostMapping()
+    @CacheEvict(cacheNames = "rating")
+    public ResponseEntity<Vote> createWithLocation(@RequestParam int restaurantId, @AuthenticationPrincipal AuthUser authUser) {
         log.info("user {} is voting for restaurant {}", authUser.getUser().getId(), restaurantId);
         Optional<Vote> existedVote = voteRepository.getByDate(authUser.getUser().getId(), LocalDate.now());
         if (existedVote.isPresent()) {
@@ -63,7 +62,7 @@ public class VoteController {
                     + ", choose PUT method for change your mind");
         }
         checkRestaurantHasMenu(restaurantId);
-        Vote vote = new Vote(LocalDate.now(), authUser.getUser(), restaurantId);
+        Vote vote = new Vote(LocalDate.now(), authUser.getUser(), restaurantRepository.getById(restaurantId));
         Vote created = voteRepository.save(vote);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
@@ -72,16 +71,16 @@ public class VoteController {
     }
 
     @Transactional
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @CacheEvict(cacheNames = "restaurants")
-    public void update(@AuthenticationPrincipal AuthUser authUser, @Valid int restaurantId, @PathVariable int id) {
+    @CacheEvict(cacheNames = "rating")
+    public void update(@AuthenticationPrincipal AuthUser authUser, @RequestParam int restaurantId, @PathVariable int id) {
         int userId = authUser.id();
         log.info("update vote {} for user {}", id, userId);
         checkRestaurantHasMenu(restaurantId);
         checkBelongTodayVoting(id, userId);
         Vote vote = voteRepository.getById(id);
-        vote.setRestaurant(restaurantRepository.findById(vote.getRestaurant().getId()).get());
+        vote.setRestaurant(restaurantRepository.findById(restaurantId).get());
         voteRepository.save(vote);
     }
 
