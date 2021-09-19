@@ -28,7 +28,7 @@ import static org.boomzin.votehub.config.WebSecurityConfig.PASSWORD_ENCODER;
 @CacheConfig(cacheNames = "users")
 public class AdminUserController extends AbstractUserController {
 
-    static final String REST_URL = "/api/users/admin";
+    static final String REST_URL = "/api/admin/users";
 
     @Override
     @GetMapping("/{id}")
@@ -80,7 +80,7 @@ public class AdminUserController extends AbstractUserController {
         repository.save(user);
     }
 
-    @GetMapping("/by")
+    @GetMapping("/byEmail")
     public ResponseEntity<User> getByEmail(@RequestParam String email) {
         log.info("getByEmail {}", email);
         return ResponseEntity.of(repository.getByEmail(email));

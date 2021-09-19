@@ -1,4 +1,4 @@
-package org.boomzin.votehub.web.menu;
+package org.boomzin.votehub.to;
 
 import lombok.Getter;
 import lombok.Setter;

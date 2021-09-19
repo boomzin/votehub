@@ -96,7 +96,7 @@ public class VoteController {
     }
 
     private void checkRestaurantHasMenu(int restaurantId) {
-        if (!restaurantRepository.getWithActualMenu(restaurantId).isPresent() ) {
+        if (!restaurantRepository.getWithMenuOnDate(restaurantId, LocalDate.now()).isPresent() ) {
             throw new IllegalRequestDataException("The selected restaurant "
                     + restaurantId
                     + " does not have a menu for today, choose another one");

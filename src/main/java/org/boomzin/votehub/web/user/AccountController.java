@@ -26,7 +26,7 @@ import static org.boomzin.votehub.util.ValidationUtil.checkNew;
 @Slf4j
 @CacheConfig(cacheNames = "users")
 public class AccountController extends AbstractUserController {
-    static final String REST_URL = "/api/users/account";
+    static final String REST_URL = "/api/account";
 
     @GetMapping
     public User get(@AuthenticationPrincipal AuthUser authUser) {
