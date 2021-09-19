@@ -2,7 +2,6 @@ package org.boomzin.votehub.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
-import org.boomzin.votehub.HasId;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -18,7 +17,7 @@ import java.time.LocalDate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @ToString(callSuper = true)
-public class Vote extends BaseEntity implements HasId {
+public class Vote extends BaseEntity {
 
     @Column(name = "vote_date")
     @NotNull
@@ -35,4 +34,8 @@ public class Vote extends BaseEntity implements HasId {
     @ManyToOne
     @JsonBackReference
     private User user ;
+
+    public Vote(LocalDate date, User user, int restaurantId) {
+
+    }
 }

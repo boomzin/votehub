@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,19 +22,12 @@ public interface VoteRepository extends JpaRepository<Vote, Integer> {
     @Query("SELECT v AS vote, v.restaurant.id AS restaurantId FROM Vote v WHERE v.user.id=?2 AND v.id=?1")
     Optional<VoteTo> get(int id, int userId);
 
-    @Query("SELECT v FROM Vote v WHERE v.user.id=?2 AND v.id=?1 AND v.date=CURRENT_DATE")
-    Optional<Vote> check(int id, int userId);
+    @Query("SELECT v FROM Vote v WHERE v.id=?1 AND v.user.id=?2 AND v.date=CURRENT_DATE")
+    Optional<Vote> isExistToday(int id, int userId);
 
-    @Query("SELECT v FROM Vote v WHERE v.user.id=?1 AND v.date=CURRENT_DATE")
-    Optional<Vote> getActual (int userId);
+    @Query("SELECT v FROM Vote v WHERE v.user.id=?1 AND v.date=?2")
+    Optional<Vote> getByDate (int userId, LocalDate date);
 
     @Query("SELECT v AS vote, v.restaurant.id AS restaurantId FROM Vote v WHERE v.user.id=?1")
     Optional<List<VoteTo>> getAll(int userId);
-
-    default void checkBelong(int id, int userId) {
-        check(id, userId).orElseThrow(
-                () -> new IllegalRequestDataException("You can only change/delete votes for today" +
-                        ", the vote " + id + " is not belong today's voting result for user" + userId));
-    }
-
 }

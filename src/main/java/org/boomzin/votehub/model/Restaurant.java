@@ -2,7 +2,6 @@ package org.boomzin.votehub.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
-import org.boomzin.votehub.HasId;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -19,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @ToString(callSuper = true)
-public class Restaurant extends BaseEntity implements HasId {
+public class Restaurant extends BaseEntity {
 
     @Column(name = "restaurant_name")
     @Size(min = 2, max = 128)

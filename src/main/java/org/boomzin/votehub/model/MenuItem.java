@@ -2,8 +2,6 @@ package org.boomzin.votehub.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
-import org.boomzin.votehub.HasId;
-import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -18,7 +16,7 @@ import java.time.LocalDate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @ToString(callSuper = true)
-public class MenuItem extends BaseEntity implements HasId {
+public class MenuItem extends BaseEntity {
 
     @Column(name = "menu_date")
     @NotNull

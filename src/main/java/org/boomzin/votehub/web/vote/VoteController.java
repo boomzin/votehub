@@ -23,9 +23,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static org.boomzin.votehub.util.ValidationUtil.assureIdConsistent;
-import static org.boomzin.votehub.util.ValidationUtil.checkNew;
-
 @RestController
 @RequestMapping(value = VoteController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
@@ -42,6 +39,12 @@ public class VoteController {
         return voteRepository.getAll(authUser.getUser().getId()).get();
     }
 
+    @GetMapping("/today")
+    public Vote getByToday (@AuthenticationPrincipal AuthUser authUser,@Valid @RequestParam LocalDate Date) {
+        log.info("get vote for user {} fo today", authUser.getUser().getId());
+        return voteRepository.getByDate(authUser.getUser().getId(), LocalDate.now()).get();
+    }
+
     @GetMapping("/{id}")
     public VoteTo get (@PathVariable int id, @AuthenticationPrincipal AuthUser authUser) {
         log.info("get vote {} for user {}", id, authUser.getUser().getId());
@@ -51,19 +54,16 @@ public class VoteController {
     @Transactional
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @CacheEvict(cacheNames = "restaurants")
-    public ResponseEntity<Vote> createWithLocation(@Valid @RequestBody Vote vote, @AuthenticationPrincipal AuthUser authUser) {
-        log.info("user {} is voting for restaurant {}", authUser.getUser().getId(), vote.getRestaurant().getId());
-        checkNew(vote);
-        Optional<Vote> existedVote = voteRepository.getActual(authUser.getUser().getId());
+    public ResponseEntity<Vote> createWithLocation(@Valid @RequestBody int restaurantId, @AuthenticationPrincipal AuthUser authUser) {
+        log.info("user {} is voting for restaurant {}", authUser.getUser().getId(), restaurantId);
+        Optional<Vote> existedVote = voteRepository.getByDate(authUser.getUser().getId(), LocalDate.now());
         if (existedVote.isPresent()) {
             throw new IllegalRequestDataException("You already have been voted today, voteId is "
                     + existedVote.get().id()
-                    + ", choose DELETE or PUT method for change your mind");
+                    + ", choose PUT method for change your mind");
         }
-        checkRestaurantHasMenu(vote);
-        vote.setDate(LocalDate.now());
-        vote.setUser(authUser.getUser());
-        vote.setRestaurant(restaurantRepository.findById(vote.getRestaurant().getId()).get());
+        checkRestaurantHasMenu(restaurantId);
+        Vote vote = new Vote(LocalDate.now(), authUser.getUser(), restaurantId);
         Vote created = voteRepository.save(vote);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
@@ -71,26 +71,16 @@ public class VoteController {
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
-    private void checkRestaurantHasMenu(Vote vote) {
-        if (!restaurantRepository.getWithActualMenu(vote.getRestaurant().getId()).isPresent() ) {
-            throw new IllegalRequestDataException("The selected restaurant "
-                    + vote.getRestaurant().getId()
-                    + " does not have a menu for today, choose another one");
-        }
-    }
-
     @Transactional
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @CacheEvict(cacheNames = "restaurants")
-    public void update(@AuthenticationPrincipal AuthUser authUser, @Valid @RequestBody Vote vote, @PathVariable int id) {
+    public void update(@AuthenticationPrincipal AuthUser authUser, @Valid int restaurantId, @PathVariable int id) {
         int userId = authUser.id();
-        log.info("update {} for user {}", vote, userId);
-        assureIdConsistent(vote, id);
-        checkRestaurantHasMenu(vote);
-        voteRepository.checkBelong(id, userId);
-        vote.setDate(LocalDate.now());
-        vote.setUser(authUser.getUser());
+        log.info("update vote {} for user {}", id, userId);
+        checkRestaurantHasMenu(restaurantId);
+        checkBelongTodayVoting(id, userId);
+        Vote vote = voteRepository.getById(id);
         vote.setRestaurant(restaurantRepository.findById(vote.getRestaurant().getId()).get());
         voteRepository.save(vote);
     }
@@ -101,7 +91,22 @@ public class VoteController {
     public void delete(@AuthenticationPrincipal AuthUser authUser, @PathVariable int id) {
         int userId = authUser.id();
         log.info("delete vote {} for user {}", id, userId);
-        voteRepository.checkBelong(id, userId);
+        checkBelongTodayVoting(id, userId);
         voteRepository.delete(id);
     }
+
+    private void checkRestaurantHasMenu(int restaurantId) {
+        if (!restaurantRepository.getWithActualMenu(restaurantId).isPresent() ) {
+            throw new IllegalRequestDataException("The selected restaurant "
+                    + restaurantId
+                    + " does not have a menu for today, choose another one");
+        }
+    }
+
+    void checkBelongTodayVoting(int id, int userId) {
+        voteRepository.isExistToday(id, userId).orElseThrow(
+                () -> new IllegalRequestDataException("You can handle votes only for today" +
+                        ", the vote " + id + " is not belong today's voting result for user" + userId));
+    }
+
 }
