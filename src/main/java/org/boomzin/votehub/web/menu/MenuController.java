@@ -8,6 +8,7 @@ import org.boomzin.votehub.model.Restaurant;
 import org.boomzin.votehub.repository.MenuItemRepository;
 import org.boomzin.votehub.repository.RestaurantRepository;
 import org.boomzin.votehub.to.Menu;
+import org.boomzin.votehub.to.MenuTo;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -38,7 +39,7 @@ public class MenuController {
     private final MenuItemRepository menuItemRepository;
 
     @GetMapping()
-    public List<MenuItem> getAllActualMenus() {
+    public List<MenuTo> getAllActualMenus() {
         log.info("get actual menus for all restaurants");
         return menuItemRepository.getMenusOnDate(LocalDate.now());
     }
@@ -134,7 +135,7 @@ public class MenuController {
     @CacheEvict(cacheNames = "menu", allEntries = true)
     public ResponseEntity<MenuItem> createMenuItemWithLocation(@PathVariable int restaurantId, @Valid @RequestBody MenuItem menuItem) {
         log.info("create menu item for restaurant {} for today", restaurantId);
-        if (menuItemRepository.getMenuItemCurrentRestaurantOnDate(restaurantId, LocalDate.now()).isPresent()) {
+        if (menuItemRepository.getMenuCurrentRestaurantOnDate(restaurantId, LocalDate.now()).size() > 0) {
             List<MenuItem> actualMenu = menuItemRepository.getMenuCurrentRestaurantOnDate(restaurantId, LocalDate.now());
             Set<String> descriptions = actualMenu.stream()
                     .map(e -> e.getDescription().toLowerCase())

@@ -1,6 +1,7 @@
 package org.boomzin.votehub.repository;
 
 import org.boomzin.votehub.model.MenuItem;
+import org.boomzin.votehub.to.MenuTo;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,6 @@ public interface MenuItemRepository extends BaseRepository<MenuItem>  {
     @Query("SELECT mi FROM MenuItem mi WHERE mi.restaurant.id=?1 AND mi.date=?2")
     Optional<MenuItem> getMenuItemCurrentRestaurantOnDate(int restaurantId, LocalDate date);
 
-    @Query("SELECT mi AS restaurantId FROM MenuItem mi WHERE mi.date=?1 ORDER BY mi.restaurant.id ASC")
-    List<MenuItem> getMenusOnDate(LocalDate date);
+    @Query("SELECT mi AS menuItem, mi.restaurant.id AS restaurantId FROM MenuItem mi WHERE mi.date=?1")
+    List<MenuTo> getMenusOnDate(LocalDate date);
 }
