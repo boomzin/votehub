@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.boomzin.votehub.model.Restaurant;
 import org.boomzin.votehub.repository.RestaurantRepository;
 import org.boomzin.votehub.to.RestaurantWithRating;
-import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -20,7 +19,6 @@ import java.util.List;
 @RequestMapping(value = RestaurantController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 @AllArgsConstructor
-@CacheConfig(cacheNames = {"menu", "restaurants"})
 public class RestaurantController {
     static final String REST_URL = "/api/restaurants";
 
@@ -30,7 +28,6 @@ public class RestaurantController {
 
 
     @GetMapping
-    @Cacheable(cacheNames = "restaurants")
     public List<Restaurant> getAll() {
         log.info("getAll");
         return restaurantRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
@@ -43,7 +40,6 @@ public class RestaurantController {
     }
 
     @GetMapping("/{id}/with-menus")
-    @Cacheable(cacheNames = "menu")
     public ResponseEntity<Restaurant> getWithMenus(@PathVariable int id) {
         log.info("get id {} with menus", id);
         return ResponseEntity.of(restaurantRepository.getWithMenus(id));
@@ -56,14 +52,13 @@ public class RestaurantController {
     }
 
     @GetMapping("/{id}/with-actual-menu")
-    @Cacheable(cacheNames = "menu")
     public ResponseEntity<Restaurant> getWithActualMenu(@PathVariable int id) {
         log.info("get id {} with menu on today", id);
         return ResponseEntity.of(restaurantRepository.getWithMenuOnDate(id, LocalDate.now()));
     }
 
     @GetMapping("/with-actual-menu")
-    @Cacheable(cacheNames = "menu")
+    @Cacheable(cacheNames = "restaurants")
     public ResponseEntity<List<Restaurant>> getAllWithActualMenu() {
         log.info("getAll with menu on today");
         return ResponseEntity.ok(restaurantRepository.getAllWithMenuOnDate(LocalDate.now()));

@@ -62,7 +62,6 @@ Spring/JPA application with authorization and role-based access rights without f
 #### 3 caches configured:
 - users
 - restaurants
-- menu
 
 #### Voting process by Users
 - Authorized user vote for the restaurant using POST method. If there is a vote of this user for the current date, then an exception is thrown;

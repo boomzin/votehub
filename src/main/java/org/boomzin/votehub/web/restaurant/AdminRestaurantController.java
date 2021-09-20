@@ -5,9 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.boomzin.votehub.error.IllegalRequestDataException;
 import org.boomzin.votehub.model.Restaurant;
 import org.boomzin.votehub.repository.RestaurantRepository;
-import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -32,7 +30,6 @@ import static org.boomzin.votehub.util.ValidationUtil.checkNew;
 @RequestMapping(value = AdminRestaurantController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 @AllArgsConstructor
-@CacheConfig(cacheNames = {"menu", "restaurants"})
 public class AdminRestaurantController {
     static final String REST_URL = "/api/admin/restaurants";
 
@@ -46,7 +43,6 @@ public class AdminRestaurantController {
     }
 
     @GetMapping
-    @Cacheable(cacheNames = "restaurants")
     public List<Restaurant> getAll() {
         log.info("getAll");
         return restaurantRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
@@ -59,15 +55,14 @@ public class AdminRestaurantController {
     }
 
     @DeleteMapping("/{id}")
-    @CacheEvict(cacheNames = {"menu", "restaurants"}, allEntries = true)
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @CacheEvict(value = "restaurants", allEntries = true)
     public void delete(@PathVariable int id) {
         log.info("delete {}", id);
         restaurantRepository.deleteExisted(id);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    @CacheEvict(cacheNames = "restaurants", allEntries = true)
     public ResponseEntity<Restaurant> createWithLocation(@Valid @RequestBody Restaurant restaurant) {
         log.info("create {}", restaurant.getName());
         checkNew(restaurant);
@@ -83,7 +78,6 @@ public class AdminRestaurantController {
     @Transactional
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @CacheEvict(cacheNames = "restaurants", allEntries = true)
     public void update(@Valid @RequestBody Restaurant restaurant, @PathVariable int id) {
         log.info("update restaurant with id={}", id);
         assureIdConsistent(restaurant, id);
@@ -94,27 +88,27 @@ public class AdminRestaurantController {
     public Restaurant getWithVotes(@PathVariable int id) {
         log.info("get restaurant {} with votes", id);
         return restaurantRepository.getWithVotes(id)
-                .orElseThrow(() ->new IllegalRequestDataException("The restaurant"
+                .orElseThrow(() ->new IllegalRequestDataException("The restaurant "
                         + id
-                        + "does not have any votes"));
+                        + " does not have any votes"));
     }
 
     @GetMapping("/{id}/with-votes-actual")
     public Restaurant getWithActualVotes(@PathVariable int id) {
         log.info("get restaurant {} with votes for today", id);
         return restaurantRepository.getWithVotesOnDate(id, LocalDate.now())
-                .orElseThrow(() ->new IllegalRequestDataException("The restaurant"
+                .orElseThrow(() ->new IllegalRequestDataException("The restaurant "
                         + id
-                        + "does not have votes today"));
+                        + " does not have votes today"));
     }
 
     @GetMapping("/{id}/with-votes-on-date")
     public Restaurant getWithVotesOnDate (@PathVariable int id, LocalDate date) {
         log.info("get restaurant {} with votes on date {}", id, date);
         return restaurantRepository.getWithVotesOnDate(id, date)
-                .orElseThrow(() ->new IllegalRequestDataException("The restaurant"
+                .orElseThrow(() ->new IllegalRequestDataException("The restaurant "
                         + id
-                        + "does not have votes on this date"));
+                        + " does not have votes on this date"));
     }
     @GetMapping("/with-votes-actual")
     public List<Restaurant> getAllWithActualVotes() {

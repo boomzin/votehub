@@ -21,7 +21,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.boomzin.votehub.util.ValidationUtil.assureIdConsistent;
@@ -52,7 +54,7 @@ public class MenuController {
 
     @Transactional
     @PostMapping(value = "/{restaurantId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @CacheEvict(cacheNames = "menu", allEntries = true)
+    @CacheEvict(value = "restaurants", allEntries = true)
     public ResponseEntity<List<MenuItem>> createMenuWithLocation(@PathVariable int restaurantId, @Valid @RequestBody Menu menu) {
         log.info("create menu for restaurant {} for today", restaurantId);
         isRestaurantExist(restaurantId);
@@ -78,7 +80,7 @@ public class MenuController {
     @Transactional
     @PutMapping(value = "/{restaurantId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @CacheEvict(cacheNames = "menu", allEntries = true)
+    @CacheEvict(value = "restaurants", allEntries = true)
     public void updateMenu(@PathVariable int restaurantId, @Valid @RequestBody Menu menu) {
         log.info("update menu for restaurant {} for today", restaurantId);
         isRestaurantExist(restaurantId);
@@ -104,7 +106,7 @@ public class MenuController {
     @Transactional
     @DeleteMapping("/{restaurantId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @CacheEvict(cacheNames = "menu", allEntries = true)
+    @CacheEvict(value = "restaurants", allEntries = true)
     public void deleteActualMenu(@PathVariable int restaurantId) {
         log.info("delete actual menu for restaurant {}", restaurantId);
         menuItemRepository.deleteAllMenuItemsForRestaurantOnDate(restaurantId, LocalDate.now());
@@ -114,7 +116,7 @@ public class MenuController {
     @Transactional
     @PutMapping(value = "/{restaurantId}/menuitem/{menuItemId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @CacheEvict(cacheNames = "menu", allEntries = true)
+    @CacheEvict(value = "restaurants", allEntries = true)
     public void updateMenuItem(@PathVariable int restaurantId, @PathVariable int menuItemId, @Valid @RequestBody MenuItem menuItem) {
         log.info("update menu item {} for restaurant {} for today", menuItemId, restaurantId);
         assureIdConsistent(menuItem, menuItemId);
@@ -132,7 +134,7 @@ public class MenuController {
 
     @Transactional
     @PostMapping(value = "/{restaurantId}/menuitem", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @CacheEvict(cacheNames = "menu", allEntries = true)
+    @CacheEvict(value = "restaurants", allEntries = true)
     public ResponseEntity<MenuItem> createMenuItemWithLocation(@PathVariable int restaurantId, @Valid @RequestBody MenuItem menuItem) {
         log.info("create menu item for restaurant {} for today", restaurantId);
         if (menuItemRepository.getMenuCurrentRestaurantOnDate(restaurantId, LocalDate.now()).size() > 0) {
@@ -166,7 +168,7 @@ public class MenuController {
 
     @DeleteMapping("/{restaurantId}/menuitem/{menuItemId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @CacheEvict(cacheNames = "menu", allEntries = true)
+    @CacheEvict(value = "restaurants", allEntries = true)
     public void deleteMenuItem(@PathVariable int restaurantId, @PathVariable int menuItemId) {
         log.info("delete menuItem {} from actual menu for restaurant {}", menuItemId, restaurantId);
         checkBelong(restaurantId, menuItemId);

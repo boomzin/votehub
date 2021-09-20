@@ -16,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class AccountControllerTest extends AbstractControllerTest {
 
-    static final String REST_URL = "/api/users/account";
+    static final String REST_URL = "/api/account";
 
 
     @Autowired

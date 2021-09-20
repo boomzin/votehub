@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.boomzin.votehub.web.user.UserTestUtil.*;
 
 class AdminUserControllerTest extends AbstractControllerTest {
-    static final String URL = "/api/users/admin/";
+    static final String URL = "/api/admin/users/";
 
     @Autowired
     private UserRepository userRepository;
@@ -41,7 +41,7 @@ class AdminUserControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
     void getByEmail() throws Exception {
-        perform(MockMvcRequestBuilders.get(URL + "/by?email=" + ADMIN_MAIL))
+        perform(MockMvcRequestBuilders.get(URL + "/by-email?email=" + ADMIN_MAIL))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE));
