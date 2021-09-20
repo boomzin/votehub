@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.boomzin.votehub.model.Restaurant;
 import org.boomzin.votehub.repository.RestaurantRepository;
-import org.boomzin.votehub.to.RestaurantWithRating;
+import org.boomzin.votehub.to.RestaurantIdWithRating;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -71,13 +71,13 @@ public class RestaurantController {
     }
 
     @GetMapping("/rating-on-date")
-    public List<RestaurantWithRating> getRatingOnDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+    public List<RestaurantIdWithRating> getRatingOnDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         log.info("get rating on date {}", date);
         return restaurantRepository.getRatingOnDate(date);
     }
 
     @GetMapping("/actual-rating")
-    public List<RestaurantWithRating> getRatingOnDate() {
+    public List<RestaurantIdWithRating> getRatingOnDate() {
         log.info("get rating for today");
         return restaurantRepository.getRatingOnDate(LocalDate.now());
     }

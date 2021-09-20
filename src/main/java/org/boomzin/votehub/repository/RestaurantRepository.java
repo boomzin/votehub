@@ -1,7 +1,7 @@
 package org.boomzin.votehub.repository;
 
 import org.boomzin.votehub.model.Restaurant;
-import org.boomzin.votehub.to.RestaurantWithRating;
+import org.boomzin.votehub.to.RestaurantIdWithRating;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +37,7 @@ public interface RestaurantRepository extends BaseRepository<Restaurant>  {
     List<Restaurant> getAllWithVotesOnDate(LocalDate date);
 
 //    https://www.baeldung.com/jpa-queries-custom-result-with-aggregation-functions
-    @Query("SELECT DISTINCT r AS restaurantInRating, count (v) as rating " +
-            "FROM Restaurant r LEFT JOIN r.votes v WHERE v.date=?1 GROUP BY r ORDER BY rating DESC")
-    List<RestaurantWithRating> getRatingOnDate(LocalDate date);
+    @Query("SELECT DISTINCT r.id AS restaurantId, count (v) as rating " +
+            "FROM Restaurant r LEFT JOIN r.votes v WHERE v.date=?1 GROUP BY restaurantId ORDER BY rating DESC")
+    List<RestaurantIdWithRating> getRatingOnDate(LocalDate date);
 }
